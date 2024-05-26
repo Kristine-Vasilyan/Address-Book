@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAddressBook.DAL", "DAL\W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAddressBook.Api", "WebApi\WebAddressBook.Api.csproj", "{46FF2714-9D98-459C-A4BC-F62DB122EA9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAddressBook.Blazor", "WebAddressBook.Blazor\WebAddressBook.Blazor.csproj", "{C6F9E891-AAB1-47FC-8CC4-71AF14560FCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAddressBook.Blazor", "WebAddressBook.Blazor\WebAddressBook.Blazor.csproj", "{C6F9E891-AAB1-47FC-8CC4-71AF14560FCC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DBCreate", "DBCreate", "{BE174A3D-E60E-4127-B890-C38DEA785338}"
+	ProjectSection(SolutionItems) = preProject
+		DBCreateQuery.sql = DBCreateQuery.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
