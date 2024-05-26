@@ -1,0 +1,105 @@
+﻿@page "/contacts"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using DAL
+
+<PageTitle>Contacts</PageTitle>
+
+<h1>Contacts</h1>
+
+<p>This component demonstrates showing data.</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <EditForm Model="contact" OnSubmit="AddContactAsync" Enhance>
+                        <div class="hstack gap-4">
+                            <label class="label-control">Fullname</label>
+                            <InputText @bind-Value="contact.FullName" class="form-control"></InputText>
+                            <label class="label-control">EmailAddress</label>
+                            <InputText @bind-Value="contact.EmailAddress" class="form-control"></InputText>
+                            <label class="label-control">PhoneNumber</label>
+                            <InputNumber @bind-Value="contact.PhoneNumber" class="form-control"></InputNumber>
+                            <label class="label-control">PhysicalAddress</label>
+                            <InputText @bind-Value="contact.PhysicalAddress" class="form-control"></InputText>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="card-body">
+                    <QuickGrid Items="@contacts">
+                        <PropertyColumn Property="@(c => c.Id)" Sortable="true" Title="ID" Class="country-name" />
+                            <ColumnOptions>
+                                <div class="search-box">
+                                    <input type="search" autofocus @onchange = "SearchContactAsync"
+                                        @bind = "ContactSearch"
+                                        @bind:event="oninput" placeholder="Contact ID..." />
+                                </div>
+                            </ColumnOptions>
+                        <PropertyColumn Property="@(c => c.FullName)" Sortable="true" Title="Full name" />
+                        <PropertyColumn Property="@(c => c.EmailAddress)" Sortable="true" Title="E-mail" />
+                        <PropertyColumn Property="@(c => c.PhysicalAddress)" Sortable="true" Title="Address" />
+                        <PropertyColumn Property="@(c => c.PhoneNumber)" Sortable="true" Title="Phone number" />
+                        <TemplateColumn Title="Action">
+                            <button @onclick="@(() => Edit(context))" class="btn btn-info">Edit</button>
+                            <button @onclick="@(() => DeleteAsync(context))" class="btn btn-danger">Delete</button>
+                        </TemplateColumn>
+                    </QuickGrid>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    IQueryable<Contact> contacts = Enumerable.Empty<Contact>().AsQueryable();
+    [SupplyParameterFromForm]
+    Contact contact { get; set; } = new();
+    int ContactSearch;
+    protected override async Task OnInitializedAsync() => await GetDataAsync();
+    private async Task GetDataAsync()
+    {
+        contacts = (await DAL.Contacts.GetAsyncList()).AsQueryable();
+    }
+    async Task AddContactAsync()
+    {
+        // Update
+        if (contact.Id > 0)
+        {
+            await DAL.Contacts.UpdateAsync(contact);
+            await GetDataAsync();
+            contact = new();
+            return;
+        }
+        //Add
+        await DAL.Contacts.InsertAsync(contact);
+        await GetDataAsync();
+        contact = new();
+        return;
+    }
+
+    void Edit(Contact editcontact)
+    {
+        contact = editcontact;
+    }
+
+    async Task DeleteAsync(Contact incomingModel)
+    {
+        await DAL.Contacts.DeleteAsync(incomingModel.Id);
+        await GetDataAsync();
+    }
+    async Task SearchContactAsync()
+    {
+        if (ContactSearch != 0)
+        { 
+            contacts = (new List<Contact> { await DAL.Contacts.GetAsync(ContactSearch) }).AsQueryable();
+        }
+        else
+        {
+            await GetDataAsync();
+        }
+    }
+
+}
